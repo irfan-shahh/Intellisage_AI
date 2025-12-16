@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    /* Language & Environment */
+    "target": "ES5",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",
+
+    /* Module */
+    "module": "ESNext",
+    "moduleResolution": "Node",
+
+    /* Type Safety */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    /* CRA-required */
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Build behavior */
+    "noEmit": true,
+    "isolatedModules": true,
+
+    /* Consistency */
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"]
+}
