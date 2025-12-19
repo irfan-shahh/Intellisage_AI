@@ -9,8 +9,8 @@ interface UsageRequest extends Request {
   }
   usage?: {
     plan: string
-    summariesLeft: number
-    chatsLeft: number
+    summaryTokenLeft: number
+    chatTokenLeft: number
     cancelAtPeriodEnd:boolean
     userDoc: IUser
     
@@ -37,14 +37,14 @@ const checkAndUpdateUsage = async (
 
   usgreq.usage = {
     plan: user.plan,
-    summariesLeft:
-      limits.summaries === Infinity
+    summaryTokenLeft:
+      limits.summaryTokens === Infinity
         ? Infinity
-        : limits.summaries - user.monthlyUsage.summariesUsed,
-    chatsLeft:
-      limits.chats === Infinity
+        : limits.summaryTokens - user.monthlyUsage.summaryTokenUsed,
+    chatTokenLeft:
+      limits.chatTokens === Infinity
         ? Infinity
-        : limits.chats - user.monthlyUsage.chatsUsed,
+        : limits.chatTokens - user.monthlyUsage.chatTokenUsed,
         cancelAtPeriodEnd:!!user.cancelAtPeriodEnd,
     userDoc: user
   }

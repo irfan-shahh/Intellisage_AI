@@ -13,7 +13,7 @@ interface ChatItem {
 }
 
 interface Usage {
-  chatsLeft: number | string
+  chatTokenLeft: number | string
 }
 
 const Chat = () => {
@@ -21,7 +21,8 @@ const Chat = () => {
   const [chats, setChats] = useState<ChatItem[]>([])
   const [isloading, setisLoading] = useState<boolean>(false)
   const [usage, setUsage] = useState<Usage | null>(null)
-  const [error, setError] = useState<boolean>(false)
+  const [error,setError]=useState<boolean>(false)
+  const [errorExceed, setErrorExceed] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchUsage = async () => {
@@ -33,17 +34,23 @@ const Chat = () => {
       }
     }
     fetchUsage()
-  }, [])
+  }, [isloading])
 
   const handleSubmit = async (): Promise<void> => {
+    setError(false)
+    setErrorExceed(false)
     try {
       setisLoading(true)
       const res = await axios.post(`${url}/api/ai/chat`, { prompt })
       setChats(prev => [...prev, { user: prompt, ai: res.data.answer }])
       setPrompt('')
     } catch (error: any) {
-      if (error?.response?.status === 403) setError(true)
-      else console.log('error while generating response', error)
+      const msg=error.response.data.message
+      if(msg==='Chat token limit exceeded for this month'){
+          setErrorExceed(true)
+      }else{
+        setError(true)
+      }
     } finally {
       setisLoading(false)
     }
@@ -57,13 +64,18 @@ const Chat = () => {
             Ask Intellisage
           </h2>
           <p>
-            Chats Left: <strong>{usage?.chatsLeft || 'Unlimited'}</strong>
+           Chat Tokens Left: <strong>{usage?.chatTokenLeft || 'Unlimited'}</strong>
           </p>
         </div>
 
+        {errorExceed && (
+          <p className="text-red-600 text-sm text-center mb-2">
+            Chat token limit exceeded for this month.
+          </p>
+        )}
         {error && (
           <p className="text-red-600 text-sm text-center mb-2">
-            Limits reached, please upgrade your plan.
+            Error while generating response.
           </p>
         )}
 
@@ -100,12 +112,14 @@ const Chat = () => {
           <textarea
             className="flex-1 border rounded-lg p-3 resize-none bg-[#f9fbff]"
             value={prompt}
+            placeholder='Enter something...'
             onChange={e => setPrompt(e.target.value)}
           />
 
           <button
-            className="bg-black text-white px-6 py-3 rounded-lg text-sm font-semibold"
+            className="bg-black text-white px-6 py-3 rounded-lg text-sm font-semibold disabled:opacity-50"
             onClick={handleSubmit}
+            disabled={!prompt}
           >
             Ask
           </button>

@@ -10,6 +10,7 @@ import PaymentSuccess from './components/payment/PaymentSuccess'
 import PaymentCancel from './components/payment/PaymentCancel';
 import Account from './components/Account';
 import { useDataContext } from './context/useDataContext';
+import History from './components/History';
 function App() {
   const {user}=useDataContext()
 
@@ -32,6 +33,7 @@ function App() {
             <Route path='/chat' element={<Chat/>}/>
             <Route path='/plans' element={<Plans/>}/>
             <Route path='/account' element={<Account/>}/>
+            <Route path='/history' element={<History/>}/>
             </Route>
             </>
                ) 

@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
 export interface MonthlyUsage {
-  chatsUsed: number
-  summariesUsed: number
+  summaryTokenUsed: number
+  chatTokenUsed: number
   lastReset: Date
 }
 
@@ -16,6 +16,7 @@ export interface IUser extends Document {
   monthlyUsage: MonthlyUsage
   previousUsage: MonthlyUsage
   cancelAtPeriodEnd:boolean
+  tokenCount:number
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema({
@@ -39,20 +40,24 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
   customerId: String,
   SubscriptionId: String,
   monthlyUsage: {
-    chatsUsed: { type: Number, default: 0 },
-    summariesUsed: { type: Number, default: 0 },
+    chatTokenUsed: { type: Number, default: 0 },
+    summaryTokenUsed: { type: Number, default: 0 },
     lastReset: { type: Date, default: Date.now }
   },
   previousUsage: {
-    chatsUsed: { type: Number, default: 0 },
-    summariesUsed: { type: Number, default: 0 },
+    chatTokenUsed: { type: Number, default: 0 },
+    summaryTokenUsed: { type: Number, default: 0 },
     lastReset: { type: Date, default: Date.now }
   },
   cancelAtPeriodEnd:{
    type:Boolean,
    default:false
 
+  },
+  tokenCount:{
+    type:Number
   }
+
 })
 
 const User: Model<IUser> =

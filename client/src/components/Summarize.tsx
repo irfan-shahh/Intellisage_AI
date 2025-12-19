@@ -18,7 +18,10 @@ const Summarize = () => {
   const [chats, setChats] = useState<ChatItem[]>([])
   const [isloading, setisLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
-  const [sizeError, setsizeError] = useState<boolean>(false)
+  const [ocrError, setOcrError] = useState<boolean>(false)
+  const [readError, setReadError] = useState<boolean>(false)
+  const [typeError, setTypeError] = useState<boolean>(false)
+  const [tokenLimitError, setTokenLimitError] = useState<boolean>(false)
   const [usage, setUsage] = useState<any>(null)
 
   useEffect(() => {
@@ -31,20 +34,16 @@ const Summarize = () => {
       }
     }
     fetchUsage()
-  }, [])
+  }, [isloading])
 
   const handleSubmit = async (): Promise<void> => {
+    setOcrError(false)
+    setReadError(false)
+    setTokenLimitError(false)
     setError(false)
+    setTypeError(false)
     try {
-      if (!file) return
-
-      const fileSizeInMB = file.size / (1024 * 1024)
-      const maxSize = usage?.plan === 'free' ? 2 : 10
-
-      if (fileSizeInMB > maxSize) {
-        setsizeError(true)
-        return
-      }
+      if (!file) return;
 
       setisLoading(true)
       const formData = new FormData()
@@ -56,8 +55,18 @@ const Summarize = () => {
       setPrompt('')
       setFile(null)
     } catch (error: any) {
-      if (error?.response?.status === 413) setError(true)
-      else console.log('error while generating summary from ai', error)
+       const msg=error.response.data.message
+       if(msg==='This PDF appears to be scanned'){
+        setOcrError(true)
+       }else if(msg==='Unable to extract readable text from this PDF'){
+        setReadError(true)
+       }else if(msg==='PDF exceeds your monthly token limit'){
+        setTokenLimitError(true)
+       }else if(msg==='Only PDF files are allowed'){
+        setTypeError(true)
+       }else{
+        setError(true)
+       }
     } finally {
       setisLoading(false)
     }
@@ -69,19 +78,38 @@ const Summarize = () => {
 
       <div className="w-full max-w-4xl bg-white border rounded-xl shadow-sm p-6 flex flex-col">
 
-        {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-gray-900">
             Summarize PDFs
           </h2>
           <p className="text-sm text-gray-700">
-            Summaries Left: <strong>{usage?.summariesLeft || 'Unlimited'}</strong>
+           Summary Tokens Left: <strong>{usage?.summaryTokenLeft || 'Unlimited'}</strong>
           </p>
         </div>
 
-        {(error || sizeError) && (
+        {(ocrError) && (
           <p className="text-red-600 text-sm text-center mb-2">
-            File too large or usage limit reached.
+            This PDF appears to be scanned. OCR is available for Pro and Premium users
+          </p>
+        )}
+        {(readError) && (
+          <p className="text-red-600 text-sm text-center mb-2">
+            Unable to extract readable text from this PDF
+          </p>
+        )}
+        {(tokenLimitError) && (
+          <p className="text-red-600 text-sm text-center mb-2">
+            PDF exceeds your monthly token limit
+          </p>
+        )}
+        {(error) && (
+          <p className="text-red-600 text-sm text-center mb-2">
+            Failed to summarize pdf
+          </p>
+        )}
+        {(typeError) && (
+          <p className="text-red-600 text-sm text-center mb-2">
+            Only PDF files are allowed
           </p>
         )}
 
@@ -91,20 +119,18 @@ const Summarize = () => {
           </p>
         )}
 
-        {/* Result Area */}
+
         <div className="flex-1 overflow-y-auto border rounded-lg p-4 mb-4 bg-[#fafbff] space-y-6">
 
           {chats.map((chat, idx) => (
             <div key={idx} className="space-y-2">
 
-              {/* User Prompt */}
               <div className="flex justify-end">
                 <div className="bg-black text-white px-4 py-2 rounded-lg text-sm max-w-[75%]">
                   {chat.user}
                 </div>
               </div>
 
-              {/* AI Summary */}
               <div className="flex justify-start">
                 <div className="bg-white border px-4 py-3 rounded-lg text-sm text-gray-800 max-w-[90%]">
                   <ReactMarkdown
@@ -120,18 +146,19 @@ const Summarize = () => {
 
         </div>
 
-        {/* Input Area */}
+   
         <div className="flex flex-col md:flex-row gap-3">
 
           <input
             type="file"
+            accept='application/pdf'
             className="border p-2 rounded-lg bg-[#f9fbff]"
             onChange={(e) => setFile(e.target.files?.[0]??null)}
           />
 
           <textarea
             className="flex-1 border p-3 rounded-lg resize-none bg-[#f9fbff] focus:outline-none"
-            placeholder="Enter prompt..."
+            placeholder="Enter something..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
           />
@@ -139,7 +166,7 @@ const Summarize = () => {
           <button
             className="bg-black text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-50"
             onClick={handleSubmit}
-            disabled={isloading}
+            disabled={isloading || !file  }
           >
             Summarize
           </button>

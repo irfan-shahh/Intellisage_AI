@@ -64,9 +64,10 @@ const Plans = () => {
           <p className="text-3xl font-bold mb-4">$0</p>
 
           <ul className="space-y-2 text-sm mb-6 text-gray-700">
-            <li>✅ 5 PDFs per month</li>
-            <li>✅ 20 chat prompts</li>
-            <li>✅ Max file size: 2MB</li>
+            <li>✅ 20k AI Chat Tokens</li>
+            <li>✅ 50k AI Summary Tokens</li>
+            <li>❌ No Data Persistence</li>
+            <li>❌ No OCR Support</li>
           </ul>
 
           <button
@@ -86,12 +87,13 @@ const Plans = () => {
    
         <div className="bg-white border rounded-lg shadow-sm w-80 p-6">
           <h2 className="font-semibold mb-2">Pro Plan</h2>
-          <p className="text-3xl font-bold mb-4">$20</p>
+          <p className="text-3xl font-bold mb-4">$20 <span className='text-xl'>/month</span></p>
 
           <ul className="space-y-2 text-sm mb-6 text-gray-700">
-            <li>🚀 50 PDFs per month</li>
-            <li>🚀 200 chat prompts</li>
-            <li>🚀 Max file size: 10MB</li>
+            <li>🔥 200k AI Chat Tokens</li>
+            <li>🔥 500k AI Summary Tokens</li>
+            <li>🔥 Data Persistence</li>
+            <li>🔥 OCR Supported</li>
           </ul>
 
           <button
@@ -111,12 +113,13 @@ const Plans = () => {
       
         <div className="bg-white border rounded-lg shadow-sm w-80 p-6">
           <h2 className="font-semibold mb-2">Premium Plan</h2>
-          <p className="text-3xl font-bold mb-4">$70</p>
+          <p className="text-3xl font-bold mb-4">$70 <span className='text-xl'>/month</span></p>
 
           <ul className="space-y-2 text-sm mb-6 text-gray-700">
-            <li>🚀 Unlimited PDFs per month</li>
-            <li>🚀 Unlimited chat prompts</li>
-            <li>🚀 Max file size: 10MB</li>
+             <li>🚀 Unlimited AI Chat Tokens</li>
+            <li>🚀 Unlimited AI Summary Tokens</li>
+            <li>🚀 Data Persistance</li>
+            <li>🚀 OCR Supported</li>
           </ul>
 
           <button

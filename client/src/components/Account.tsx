@@ -9,8 +9,8 @@ axios.defaults.withCredentials = true
 
 interface Usage {
   plan: string
-  chatsLeft: number | string
-  summariesLeft: number | string
+  chatTokenLeft: number | string
+  summaryTokenLeft: number | string
   cancelAtPeriodEnd:boolean
 }
 
@@ -80,19 +80,19 @@ const Account = () => {
           <div className="p-5 rounded-lg border bg-[#f1f7ff]">
             <p className="text-gray-600 text-sm">Chats Left</p>
             <p className="text-lg font-semibold text-gray-900 mt-1">
-              {usage?.chatsLeft || 'Unlimited'}
+              {usage?.chatTokenLeft || 'Unlimited'}
             </p>
           </div>
 
           <div className="p-5 rounded-lg border bg-[#f3faff]">
             <p className="text-gray-600 text-sm">Summaries Left</p>
             <p className="text-lg font-semibold text-gray-900 mt-1">
-              {usage?.summariesLeft || 'Unlimited'}
+              {usage?.summaryTokenLeft || 'Unlimited'}
             </p>
           </div>
         </div>
 
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-10 gap-4">
           <button
   onClick={cancelPlan}
   className="px-6 py-3 rounded-lg text-sm font-semibold border bg-[#e7efff] hover:bg-[#d9e6ff] text-gray-800 transition"
@@ -102,6 +102,12 @@ const Account = () => {
     : usage?.cancelAtPeriodEnd
       ? 'Resume Subscription'
       : 'Cancel Subscription'}
+</button>
+<button
+  onClick={() => navigate('/history')}
+  className="px-6 py-3 rounded-lg text-sm font-semibold border bg-[#eef3ff] hover:bg-[#dde7ff] text-gray-800 transition"
+>
+  View History
 </button>
         </div>
       </div>

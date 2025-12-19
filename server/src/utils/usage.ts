@@ -16,16 +16,16 @@ const resetUsageIfNewMonth = (user: any) => {
       }
     }
 
-    user.monthlyUsage.chatsUsed = 0
-    user.monthlyUsage.summariesUsed = 0
+    user.monthlyUsage.chatTokenUsed = 0
+    user.monthlyUsage.summaryTokenUsed = 0
     user.monthlyUsage.lastReset = now
   }
 }
 
 const LIMITS = {
-  free: { summaries: 5, chats: 10 },
-  pro: { summaries: 100, chats: 200 },
-  premium: { summaries: Infinity, chats: Infinity }
+  free: { chatTokens: 20000, summaryTokens:50000  },
+  pro: { chatTokens: 200000,summaryTokens: 500000 },
+  premium: { chatTokens: Infinity, summaryTokens: Infinity }
 }
 
 export { resetUsageIfNewMonth, LIMITS }

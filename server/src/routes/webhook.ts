@@ -40,8 +40,8 @@ router.post('/', async (req: Request, res: Response) => {
           SubscriptionId: null,
           cancelAtPeriodEnd:false,
           monthlyUsage: {
-            chatsUsed: 0,
-            summariesUsed: 0,
+            chatTokenUsed: 0,
+            summaryTokenUsed: 0,
             lastReset: new Date()
           }
         },
@@ -71,7 +71,7 @@ router.post('/', async (req: Request, res: Response) => {
         update.previousUsage = { ...user?.monthlyUsage }
       } else {
         update.plan = plan
-        if (user?.previousUsage && user.previousUsage.chatsUsed != null) {
+        if (user?.previousUsage && user.previousUsage.chatTokenUsed != null) {
           update.monthlyUsage = { ...user.previousUsage }
           update.previousUsage = {}
         }
@@ -119,8 +119,8 @@ router.post('/', async (req: Request, res: Response) => {
   if (!user) break
 
   user.monthlyUsage = {
-    chatsUsed: 0,
-    summariesUsed: 0,
+    chatTokenUsed: 0,
+    summaryTokenUsed: 0,
     lastReset: new Date(invoice.lines.data[0].period.start * 1000)
   }
 

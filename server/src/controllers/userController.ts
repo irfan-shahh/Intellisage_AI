@@ -2,10 +2,19 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import User from '../models/user_model'
+import ChatHistory from '../models/chatHistory_model'
+import summaryHistory from '../models/summaryHistory_model'
 
 interface JwtPayload {
   userId: string
   email: string
+}
+interface AuthRequest extends Request{
+  user:{
+    id:string
+    email:string
+    plan:string
+  }
 }
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -100,12 +109,12 @@ export const verifyUser = async (req: Request, res: Response) => {
 
 export const getUsage = async (req: any, res: Response) => {
   try {
-    const { plan, summariesLeft, chatsLeft,cancelAtPeriodEnd } = req.usage
+    const { plan, summaryTokenLeft, chatTokenLeft,cancelAtPeriodEnd } = req.usage
 
     return res.status(200).json({
       plan,
-      summariesLeft,
-      chatsLeft,
+      summaryTokenLeft,
+      chatTokenLeft,
       cancelAtPeriodEnd
     })
   } catch (error) {
@@ -113,3 +122,37 @@ export const getUsage = async (req: any, res: Response) => {
     return res.status(500).json({ error: 'Failed to get usage info' })
   }
 }
+
+
+export const getHistory=async(req:Request,res:Response):Promise<Response|void>=>{
+  const hreq=req as AuthRequest;
+  const {type,from,to} =req.query as {type:string,from:string,to:string};
+  const userId=hreq.user.id;
+  const plan =hreq.user?.plan
+  if(plan==='free'){
+      return res.status(403).json({
+      message: 'Upgrade to view history'
+    })
+  }
+  const dateFilter:any={}
+  if(from || to){
+    dateFilter.createdAt={}
+    if(from){
+      dateFilter.createdAt.$gte=new Date(from)
+    }
+    if(to) {
+      
+      dateFilter.createdAt.$lte=new Date(to)
+    }
+  }
+
+
+   const history = type === 'chat' 
+     ? await ChatHistory.find({ user: userId, ...dateFilter }).sort({ createdAt: -1 })
+     : await summaryHistory.find({ user: userId, ...dateFilter }).sort({ createdAt: -1 })
+   
+   return res.json(history)
+
+}
+
+

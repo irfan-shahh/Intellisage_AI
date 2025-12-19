@@ -38,7 +38,11 @@ export const createCheckOutSession = async (req: Request, res: Response) => {
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
-    line_items: [{ price: priceId!, quantity: 1 }],
+    line_items: [
+      { 
+        price: priceId!, 
+        quantity: 1 }
+    ],
     customer_email: authreq.user.email,
     success_url:
       'http://localhost:3000/payment/success?session_id={CHECKOUT_SESSION_ID}',

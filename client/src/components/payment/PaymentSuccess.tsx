@@ -35,7 +35,7 @@ const PaymentSuccess = () => {
 
     const goHome = ():void => {
 
-        navigate('/chat')
+        navigate('/account')
     }
     return (
         <div className="bg-gray-300 h-screen flex justify-center ">
